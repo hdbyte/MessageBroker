@@ -2,7 +2,7 @@
 
 ## Getting Started
 ```csharp
-HDByte.MessageBroker broker = HDByte.BrokerManager.GetMessageBroker();
+HDByte.MessageBroker broker = new HDByte.BrokerManager.GetMessageBroker();
 ```
 
 ### Subscribing Examples
