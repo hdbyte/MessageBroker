@@ -6,8 +6,8 @@
     <ApplicationIcon />
     <Win32Resource />
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Nick Stuer</Authors>
-    <Company />
+    <Authors>HDByte</Authors>
+    <Company>HDByte</Company>
     <Product>HDByte.MessageBroker</Product>
     <PackageId>HDByte.MessageBroker</PackageId>
     <Description>An easy to use message broker class to subscribe and publish messages across whole projects.</Description>
