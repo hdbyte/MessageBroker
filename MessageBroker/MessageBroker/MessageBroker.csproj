@@ -15,7 +15,7 @@
     <RepositoryUrl>https://github.com/hdbyte/MessageBroker</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <Copyright>2019</Copyright>
-    <PackageLicenseExpression>MIT License</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
 </Project>
