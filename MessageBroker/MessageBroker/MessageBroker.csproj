@@ -3,6 +3,19 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>HDByte.MessageBroker</RootNamespace>
+    <ApplicationIcon />
+    <Win32Resource />
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Nick Stuer</Authors>
+    <Company />
+    <Product>HDByte.MessageBroker</Product>
+    <PackageId>HDByte.MessageBroker</PackageId>
+    <Description>An easy to use message broker class to subscribe and publish messages across whole projects.</Description>
+    <PackageProjectUrl>https://github.com/hdbyte/MessageBroker</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/hdbyte/MessageBroker</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
+    <Copyright>2019</Copyright>
+    <PackageLicenseExpression>MIT License</PackageLicenseExpression>
   </PropertyGroup>
 
 </Project>
