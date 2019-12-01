@@ -16,6 +16,7 @@
     <RepositoryType>Github</RepositoryType>
     <Copyright>2019</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
 </Project>

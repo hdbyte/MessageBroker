@@ -7,11 +7,21 @@ HDByte.MessageBroker broker = HDByte.BrokerManager.GetMessageBroker();
 
 ### Subscribing Examples
 ```csharp
-broker.Subscribe<TestEvent>(TestEventAction, ActionThread.Ui);
-broker.Subscribe<TestEvent2>(TestEventAction);
+broker.Subscribe<NewCustomerEvent>(OnNewCustomer, ActionThread.Ui);
+broker.Subscribe<NewOrderEvent>(OnNewOrder);
+
+private void OnNewCustomer(NewCustomer e)
+{
+    // Do Something with e.Name
+}
+
+private void OnNewOrder(NewOrder e)
+{
+    // Do Something
+}
 ```
 
 ### Publishing Examples
 ```csharp
-broker.Publish(new TestEvent() { Name = "Made Up Event" });
+broker.Publish(new NewCustomerEvent() { Name = "Fake Name" });
 ```
