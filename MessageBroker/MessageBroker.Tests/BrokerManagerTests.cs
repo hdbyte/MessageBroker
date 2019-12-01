@@ -16,5 +16,6 @@ namespace MessageBroker.Tests
             Assert.That(firstInstance, Is.SameAs(thirdInstance));
             Assert.That(firstInstance, Is.Not.SameAs(secondInstance));
         }
+
     }
 }
