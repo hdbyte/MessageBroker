@@ -20,13 +20,13 @@ namespace HDByte.MessageBroker
         /// <returns></returns>
         public Guid Subscribe<T>(Action<T> action, ActionThread actionThread = ActionThread.Publisher)
         {
-            Guid key = Guid.NewGuid();
+            Guid token = Guid.NewGuid();
             Type type = typeof(T);
-            Subscription subscription = new Subscription() {Key = key, Type = type, Action = action, ActionThread = actionThread};
+            Subscription subscription = new Subscription() {Token = token, Type = type, Action = action, ActionThread = actionThread};
 
             _subscriptions.Add(subscription);
 
-            return key;
+            return token;
         }
 
         /// <summary>
