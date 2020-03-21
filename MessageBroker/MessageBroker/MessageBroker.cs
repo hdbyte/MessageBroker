@@ -17,8 +17,8 @@ namespace HDByte.MessageBroker
         /// Subscribes to a message type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="action">Method to call when a subscribed message type is broadcasted.)</param>
-        /// <param name="actionThread">The thread in which the action is performed on. Defaults to ActionThread.Publisher</param>
+        /// <param name="action">Method to call when a subscribed message type is broadcasted.</param>
+        /// <param name="actionThread">The thread in which the action is performed on. Defaults to ActionThread.Publisher which performs the action on thread that published the event.</param>
         /// <returns></returns>
         public Guid Subscribe<T>(Action<T> action, ActionThread actionThread = ActionThread.Publisher)
         {
@@ -64,6 +64,11 @@ namespace HDByte.MessageBroker
             }
         }
 
+        /// <summary>
+        /// Returns true if token is used in any subscription.
+        /// </summary>
+        /// <param name="token">Token to be checked.</param>
+        /// <returns></returns>
         public bool IsSubscribed(Guid token)
         {
             bool isTokenSubscribed = _subscriptions.Any(a => a.Token == token);
@@ -71,6 +76,11 @@ namespace HDByte.MessageBroker
             return isTokenSubscribed;
         }
 
+        /// <summary>
+        /// Unsubscribes a given token to prevent further actions.
+        /// </summary>
+        /// <param name="token">Token to unsubscribe.</param>
+        /// <returns></returns>
         public bool Unsubscribe(Guid token)
         {
             if (IsSubscribed(token))
