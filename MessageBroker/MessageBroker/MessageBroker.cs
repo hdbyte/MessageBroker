@@ -73,9 +73,7 @@ namespace HDByte.MessageBroker
 
         public bool Unsubscribe(Guid token)
         {
-            bool isTokenSubscribed = _subscriptions.Any(a => a.Token == token);
-
-            if (isTokenSubscribed)
+            if (IsSubscribed(token))
             {
                 lock (_padLock)
                 {
