@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace HDByte.MessageBroker
 {
@@ -12,11 +14,13 @@ namespace HDByte.MessageBroker
         private readonly SynchronizationContext _synchronizationContext = SynchronizationContext.Current;
         private List<Subscription> _subscriptions = new List<Subscription>();
         private readonly object _padLock = new object();
-        private readonly TaskFactory _factory;
+        public BlockingCollection<IMessageQueueItem> _messageQueue = new BlockingCollection<IMessageQueueItem>();
 
         public MessageBroker()
         {
-             _factory = Task.Factory;
+            var thread = new Thread(() => EventQueueThreadConsumer());
+            thread.IsBackground = true;
+            thread.Start();
         }
 
         /// <summary>
@@ -24,9 +28,9 @@ namespace HDByte.MessageBroker
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action">Method to call when a subscribed message type is broadcasted.</param>
-        /// <param name="actionThread">The thread in which the action is performed on. Defaults to ActionThread.Publisher which performs the action on thread that published the event.</param>
+        /// <param name="actionThread">The thread in which the action is performed on. Defaults to ActionThread.Background</param>
         /// <returns></returns>
-        public Guid Subscribe<T>(Action<T> action, ActionThread actionThread = ActionThread.Publisher)
+        public Guid Subscribe<T>(Action<T> action, ActionThread actionThread = ActionThread.Background)
         {
             Guid token = Guid.NewGuid();
             Type type = typeof(T);
@@ -47,30 +51,37 @@ namespace HDByte.MessageBroker
         /// <param name="message">The message that is broadcast.</param>
         public void Publish<T>(T message)
         {
-            _factory.StartNew(() =>
-            { 
-                Type messageType = typeof(T);
+            var messageQueue = new MessageQueueItem<T>() { Message = message, Type = typeof(T) };
+            _messageQueue.Add(messageQueue);
+        }
 
-                foreach (Subscription subscription in _subscriptions)
+        private void EventQueueThreadConsumer()
+        {
+            while (!_messageQueue.IsCompleted)
+            {
+                if (_messageQueue.TryTake(out IMessageQueueItem message))
                 {
-                    if (subscription.Type.IsAssignableFrom(messageType))
+                    Type messageType = message.Type;
+
+                    foreach (Subscription subscription in _subscriptions)
                     {
-                        switch (subscription.ActionThread)
+                        if (subscription.Type.IsAssignableFrom(messageType))
                         {
-                            case ActionThread.Ui:
-                                _synchronizationContext.Post(delegate { ((Action<T>)subscription.Action)(message); }, null);
-                                break;
-                            //case ActionThread.Background:
-                                //Task.Run(() => ((Action<T>)subscription.Action)(message));
-                                //break;
-                            //case ActionThread.Publisher:
-                            default:
-                                ((Action<T>)subscription.Action)(message);
-                                break;
+                            switch (subscription.ActionThread)
+                            {
+                                // Untested if this delegate works as of 4/23/2020. Not sure how to test this with C#.
+                                case ActionThread.Ui:
+                                    _synchronizationContext.Post(delegate { message.Execute(subscription); }, null);
+                                    break;
+                                case ActionThread.Background:
+                                default:
+                                    message.Execute(subscription);
+                                    break;
+                            }
                         }
                     }
                 }
-            });
+            }
         }
 
         /// <summary>

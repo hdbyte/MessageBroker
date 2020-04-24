@@ -2,7 +2,6 @@
 {
     public enum ActionThread
     {
-        Publisher,
         Ui,
         Background
     }

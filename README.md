@@ -4,6 +4,7 @@
 ```csharp
 HDByte.MessageBroker broker = HDByte.BrokerManager.GetMessageBroker();
 ```
+All published events are handled by a background thread running in MessageBroker, with a first in first out method.
 
 ### Subscribing Examples
 ```csharp

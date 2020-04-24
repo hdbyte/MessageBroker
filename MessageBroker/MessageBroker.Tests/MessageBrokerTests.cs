@@ -50,7 +50,7 @@ namespace MessageBroker.Tests
 
             messageBroker.Publish(new EventArgs());
 
-            Thread.Sleep(1);
+            Thread.Sleep(200);
             Assert.That(publishExecuted, Is.EqualTo(true));
         }
     }
