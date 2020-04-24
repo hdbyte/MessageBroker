@@ -12,6 +12,12 @@ namespace HDByte.MessageBroker
         private readonly SynchronizationContext _synchronizationContext = SynchronizationContext.Current;
         private List<Subscription> _subscriptions = new List<Subscription>();
         private readonly object _padLock = new object();
+        private readonly TaskFactory _factory;
+
+        public MessageBroker()
+        {
+             _factory = Task.Factory;
+        }
 
         /// <summary>
         /// Subscribes to a message type.
@@ -41,27 +47,30 @@ namespace HDByte.MessageBroker
         /// <param name="message">The message that is broadcast.</param>
         public void Publish<T>(T message)
         {
-            Type messageType = typeof(T);
+            _factory.StartNew(() =>
+            { 
+                Type messageType = typeof(T);
 
-            foreach(Subscription subscription in _subscriptions)
-            {
-                if (subscription.Type.IsAssignableFrom(messageType))
+                foreach (Subscription subscription in _subscriptions)
                 {
-                    switch (subscription.ActionThread)
+                    if (subscription.Type.IsAssignableFrom(messageType))
                     {
-                        case ActionThread.Ui:
-                            _synchronizationContext.Post(delegate { ((Action<T>)subscription.Action)(message); }, null);
-                            break;
-                        case ActionThread.Background:
-                            Task.Run(() => ((Action<T>)subscription.Action)(message));
-                            break;
-                        case ActionThread.Publisher:
-                        default:
-                            ((Action<T>)subscription.Action)(message);
-                            break;
+                        switch (subscription.ActionThread)
+                        {
+                            case ActionThread.Ui:
+                                _synchronizationContext.Post(delegate { ((Action<T>)subscription.Action)(message); }, null);
+                                break;
+                            //case ActionThread.Background:
+                                //Task.Run(() => ((Action<T>)subscription.Action)(message));
+                                //break;
+                            //case ActionThread.Publisher:
+                            default:
+                                ((Action<T>)subscription.Action)(message);
+                                break;
+                        }
                     }
                 }
-            }
+            });
         }
 
         /// <summary>

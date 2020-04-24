@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace MessageBroker.Tests
 {
@@ -48,6 +49,8 @@ namespace MessageBroker.Tests
             Assert.That(publishExecuted, Is.EqualTo(false));
 
             messageBroker.Publish(new EventArgs());
+
+            Thread.Sleep(1);
             Assert.That(publishExecuted, Is.EqualTo(true));
         }
     }
