@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MessageBroker\MessageBroker.csproj" />
+    <ProjectReference Include="..\HDByte.MessageBroker\HDByte.MessageBroker.csproj" />
   </ItemGroup>
 
 </Project>

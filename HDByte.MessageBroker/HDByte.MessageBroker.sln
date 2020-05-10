@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageBroker", "MessageBroker\MessageBroker.csproj", "{D19E4F24-5B0C-471A-8222-989D93BC5650}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HDByte.MessageBroker", "HDByte.MessageBroker\HDByte.MessageBroker.csproj", "{D19E4F24-5B0C-471A-8222-989D93BC5650}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBroker.Tests", "MessageBroker.Tests\MessageBroker.Tests.csproj", "{C0ECE5FD-C0E1-44B5-BD54-65057BB65034}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HdByte.MessageBroker.Tests", "HDByte.MessageBrokerTests\HDByte.MessageBrokerTests.csproj", "{C0ECE5FD-C0E1-44B5-BD54-65057BB65034}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
