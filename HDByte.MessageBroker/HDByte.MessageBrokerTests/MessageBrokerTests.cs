@@ -14,7 +14,7 @@ namespace MessageBroker.Tests
         [Test]
         public void IsSubscribedWorks()
         {
-            var messageBroker = new HDByte.MessageBroker.MessageBroker();
+            var messageBroker = new HDByte.MessageBroker.Broker();
             var token = messageBroker.Subscribe<EventArgs>(null);
 
             Assert.That(messageBroker.IsSubscribed(token), Is.EqualTo(true));
@@ -24,7 +24,7 @@ namespace MessageBroker.Tests
         [Test]
         public void UnsubscribeOnlyUnsubcribesGivenToken()
         {
-            var messageBroker = new HDByte.MessageBroker.MessageBroker();
+            var messageBroker = new HDByte.MessageBroker.Broker();
             var tokenOne = messageBroker.Subscribe<EventArgs>(null);
             var tokenTwo = messageBroker.Subscribe<EventArgs>(null);
 
@@ -40,7 +40,7 @@ namespace MessageBroker.Tests
         [Test]
         public void PublishBackgroundThreadWorks()
         {
-            var messageBroker = new HDByte.MessageBroker.MessageBroker();
+            var messageBroker = new HDByte.MessageBroker.Broker();
 
             bool publishExecuted = false;
             int executedThreadID = 0;
@@ -67,7 +67,7 @@ namespace MessageBroker.Tests
             // This is needed because when testing, SynchronizationContext isn't set because we're not using a GUI. Test will fail without this because Context is null until a GUI sets it.
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
-            var messageBroker = new HDByte.MessageBroker.MessageBroker();
+            var messageBroker = new HDByte.MessageBroker.Broker();
 
             bool publishExecuted = false;
             int checkBackgroundThreadID = 0;
