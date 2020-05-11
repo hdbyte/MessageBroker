@@ -1,5 +1,7 @@
 # MessageBroker
 
+[![NuGet version (HDByte.MessageBroker)](https://img.shields.io/nuget/v/HDByte.MessageBroker.svg?style=flat-square)](https://www.nuget.org/packages/HDByte.MessageBroker/)
+
 ## Getting Started
 ```csharp
 HDByte.MessageBroker broker = HDByte.BrokerManager.GetMessageBroker();
