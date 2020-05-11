@@ -14,13 +14,14 @@ namespace HDByte.MessageBroker
         private readonly SynchronizationContext _synchronizationContext = SynchronizationContext.Current;
         private List<Subscription> _subscriptions = new List<Subscription>();
         private readonly object _padLock = new object();
-        public BlockingCollection<IMessageQueueItem> _messageQueue = new BlockingCollection<IMessageQueueItem>();
+        public readonly BlockingCollection<IMessageQueueItem> _messageQueue = new BlockingCollection<IMessageQueueItem>();
+        private readonly Thread _thread;
 
         public MessageBroker()
         {
-            var thread = new Thread(() => EventQueueThreadConsumer());
-            thread.IsBackground = true;
-            thread.Start();
+            _thread = new Thread(() => EventQueueThreadConsumer());
+            _thread.IsBackground = true;
+            _thread.Start();
         }
 
         /// <summary>
@@ -55,6 +56,9 @@ namespace HDByte.MessageBroker
             _messageQueue.Add(messageQueue);
         }
 
+        /// <summary>
+        /// The method that the background thread is using on a loop.
+        /// </summary>
         private void EventQueueThreadConsumer()
         {
             while (!_messageQueue.IsCompleted)
@@ -69,7 +73,6 @@ namespace HDByte.MessageBroker
                         {
                             switch (subscription.ActionThread)
                             {
-                                // Untested if this delegate works as of 4/23/2020. Not sure how to test this with C#.
                                 case ActionThread.UI:
                                     _synchronizationContext.Post(delegate { message.Execute(subscription); }, null);
                                     break;
@@ -115,6 +118,17 @@ namespace HDByte.MessageBroker
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Returns the Thread ID of the Message Broker consumer thread.
+        /// 
+        /// Mostly useful for testing purposes but may be needed in rare circumstances.
+        /// </summary>
+        /// <returns></returns>
+        public int GetBackgroundThreadID()
+        {
+            return _thread.ManagedThreadId;
         }
     }
 }
