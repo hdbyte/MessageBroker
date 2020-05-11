@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace HDByte.MessageBroker
 {
-    public sealed class MessageBroker
+    public sealed class Broker
     {
         private readonly SynchronizationContext _synchronizationContext = SynchronizationContext.Current;
         private List<Subscription> _subscriptions = new List<Subscription>();
@@ -17,7 +17,7 @@ namespace HDByte.MessageBroker
         public readonly BlockingCollection<IMessageQueueItem> _messageQueue = new BlockingCollection<IMessageQueueItem>();
         private readonly Thread _thread;
 
-        public MessageBroker()
+        public Broker()
         {
             _thread = new Thread(() => EventQueueThreadConsumer());
             _thread.IsBackground = true;
@@ -121,7 +121,7 @@ namespace HDByte.MessageBroker
         }
 
         /// <summary>
-        /// Returns the Thread ID of the Message Broker consumer thread.
+        /// Returns the Thread ID of the Broker consumer thread.
         /// 
         /// Mostly useful for testing purposes but may be needed in rare circumstances.
         /// </summary>
