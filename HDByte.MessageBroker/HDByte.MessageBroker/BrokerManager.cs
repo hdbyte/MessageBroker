@@ -3,13 +3,13 @@
     public sealed class BrokerManager
     {
         private static readonly object _padLock = new object();
-        private static MessageBroker _instance = null;
+        private static Broker _instance = null;
 
         /// <summary>
-        /// Creates and/or returns an instance of MessageBroker.
+        /// Creates and/or returns an instance of Broker.
         /// </summary>
         /// <returns></returns>
-        public static MessageBroker GetMessageBroker()
+        public static Broker GetBroker()
         {
             if (_instance == null)
             {
@@ -17,7 +17,7 @@
                 {
                     if (_instance == null)
                     {
-                        _instance = new MessageBroker();
+                        _instance = new Broker();
                     }
                 }
             }

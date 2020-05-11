@@ -9,9 +9,9 @@ namespace MessageBroker.Tests
         [Test]
         public void AlwaysReturnsSameInstance()
         {
-            var firstInstance = HDByte.MessageBroker.BrokerManager.GetMessageBroker();
-            var secondInstance = new HDByte.MessageBroker.MessageBroker();
-            var thirdInstance = HDByte.MessageBroker.BrokerManager.GetMessageBroker();
+            var firstInstance = HDByte.MessageBroker.BrokerManager.GetBroker();
+            var secondInstance = new HDByte.MessageBroker.Broker();
+            var thirdInstance = HDByte.MessageBroker.BrokerManager.GetBroker();
 
             Assert.That(firstInstance, Is.SameAs(thirdInstance));
             Assert.That(firstInstance, Is.Not.SameAs(secondInstance));

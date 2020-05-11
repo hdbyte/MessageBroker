@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HDByte.MessageBroker", "HDByte.MessageBroker\HDByte.MessageBroker.csproj", "{D19E4F24-5B0C-471A-8222-989D93BC5650}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HdByte.MessageBroker.Tests", "HDByte.MessageBrokerTests\HDByte.MessageBrokerTests.csproj", "{C0ECE5FD-C0E1-44B5-BD54-65057BB65034}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HDByte.MessageBrokerTests", "HDByte.MessageBrokerTests\HDByte.MessageBrokerTests.csproj", "{C0ECE5FD-C0E1-44B5-BD54-65057BB65034}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HDByte.MessageBrokerExample", "HDByte.MessageBrokerExample\HDByte.MessageBrokerExample.csproj", "{DFDD6EDB-E460-4C6E-A511-546A8B2AED3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{C0ECE5FD-C0E1-44B5-BD54-65057BB65034}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0ECE5FD-C0E1-44B5-BD54-65057BB65034}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0ECE5FD-C0E1-44B5-BD54-65057BB65034}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFDD6EDB-E460-4C6E-A511-546A8B2AED3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFDD6EDB-E460-4C6E-A511-546A8B2AED3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFDD6EDB-E460-4C6E-A511-546A8B2AED3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFDD6EDB-E460-4C6E-A511-546A8B2AED3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
