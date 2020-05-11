@@ -2,7 +2,7 @@
 {
     public enum ActionThread
     {
-        Ui,
+        UI,
         Background
     }
 }

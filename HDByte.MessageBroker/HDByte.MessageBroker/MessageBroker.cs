@@ -70,7 +70,7 @@ namespace HDByte.MessageBroker
                             switch (subscription.ActionThread)
                             {
                                 // Untested if this delegate works as of 4/23/2020. Not sure how to test this with C#.
-                                case ActionThread.Ui:
+                                case ActionThread.UI:
                                     _synchronizationContext.Post(delegate { message.Execute(subscription); }, null);
                                     break;
                                 case ActionThread.Background:
