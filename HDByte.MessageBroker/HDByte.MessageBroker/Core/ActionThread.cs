@@ -3,6 +3,7 @@
     public enum ActionThread
     {
         UI,
-        Background
+        Background,
+        Ui = UI // Will get removed in next major release.
     }
 }
