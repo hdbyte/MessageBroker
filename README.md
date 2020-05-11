@@ -1,8 +1,8 @@
 # MessageBroker
 
 [![Nuget Version](https://img.shields.io/nuget/v/HDByte.MessageBroker.svg?style=flat-square)](https://www.nuget.org/packages/HDByte.MessageBroker/)
-[![Nuget Downloads](https://img.shields.io/nuget/dt/HDByte.MessageBroker)
-[![](https://tokei.rs/b1/github/hdbyte/messagebroker]()
+![Downloads](https://img.shields.io/nuget/dt/HDByte.MessageBroker)
+![Lines Of Code](https://tokei.rs/b1/github/hdbyte/messagebroker)
 
 ![GitHub issues](https://img.shields.io/github/issues/hdbyte/messagebroker?style=flat-square)
 
@@ -18,9 +18,14 @@ BrokerManager.GetBroker() is a static method that always returns the same instan
 HDByte.MessageBroker.Broker Broker = BrokerManager.GetBroker();
 ```
 
-#### Example - Publishing
-Assume you have a class which stores Customer Order information:
+### Example - Publishing
 ```csharp
+public void PlaceFakeOrder()
+{
+    var order = new CustomerOrder() { Name = "John Smith", ItemName = "Mousepad", ItemCost = 10.99, ItemQuantity = 3 };
+    Broker.Publish(order);
+}
+
 public class CustomerOrder
 {
     public string Name {get; set; }
@@ -34,16 +39,8 @@ public class CustomerOrder
     }
 }
 ```
-```csharp
-public void PlaceFakeOrder()
-{
-    var order = new CustomerOrder() { Name = "John Smith", ItemName = "Mousepad", ItemCost = 10.99, ItemQuantity = 3 };
-    Broker.Publish(order);
-}
 
-```
-
-#### Example - Subscribing
+### Example - Subscribing
 Using ActionThread.UI because this event will update the UI. Remove this if the event does not need to update the UI.
 ```csharp
 Broker.Subscribe<CustomerOrder>(OnNewOrder, ActionThread.UI);
