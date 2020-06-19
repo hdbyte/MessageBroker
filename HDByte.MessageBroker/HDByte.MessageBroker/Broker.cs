@@ -67,19 +67,22 @@ namespace HDByte.MessageBroker
                 {
                     Type messageType = message.Type;
 
-                    foreach (Subscription subscription in _subscriptions)
+                    lock (_padLock)
                     {
-                        if (subscription.Type.IsAssignableFrom(messageType))
+                        foreach (Subscription subscription in _subscriptions)
                         {
-                            switch (subscription.ActionThread)
+                            if (subscription.Type.IsAssignableFrom(messageType))
                             {
-                                case ActionThread.UI:
-                                    _synchronizationContext.Post(delegate { message.Execute(subscription); }, null);
-                                    break;
-                                case ActionThread.Background:
-                                default:
-                                    message.Execute(subscription);
-                                    break;
+                                switch (subscription.ActionThread)
+                                {
+                                    case ActionThread.UI:
+                                        _synchronizationContext.Post(delegate { message.Execute(subscription); }, null);
+                                        break;
+                                    case ActionThread.Background:
+                                    default:
+                                        message.Execute(subscription);
+                                        break;
+                                }
                             }
                         }
                     }
