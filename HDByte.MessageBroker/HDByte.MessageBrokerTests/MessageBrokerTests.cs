@@ -50,7 +50,7 @@ namespace MessageBroker.Tests
                 executedThreadID = Thread.CurrentThread.ManagedThreadId;
             };
 
-            var tokenOne = messageBroker.Subscribe<EventArgs>(doSomethingOnBackgroundThread);
+            var tokenOne = messageBroker.Subscribe<EventArgs>(doSomethingOnBackgroundThread, ActionThread.Background);
 
             Assert.That(publishExecuted, Is.EqualTo(false));
 
@@ -59,6 +59,30 @@ namespace MessageBroker.Tests
             Thread.Sleep(200); // Give MessageBroker plenty of time to process action.
             Assert.That(publishExecuted, Is.EqualTo(true));
             Assert.That(executedThreadID, Is.EqualTo(messageBroker.GetBackgroundThreadID()));
+        }
+
+        [Test]
+        public void PublishTaskWorks()
+        {
+            var messageBroker = new HDByte.MessageBroker.Broker();
+
+            bool publishExecuted = false;
+            int executedThreadID = 0;
+            Action<EventArgs> doSomethingOnBackgroundThread = (e) =>
+            {
+                publishExecuted = true;
+                executedThreadID = Thread.CurrentThread.ManagedThreadId;
+            };
+
+            var tokenOne = messageBroker.Subscribe<EventArgs>(doSomethingOnBackgroundThread);
+
+            Assert.That(publishExecuted, Is.EqualTo(false));
+
+            messageBroker.Publish(new EventArgs());
+
+            Thread.Sleep(200); // Give MessageBroker plenty of time to process action.
+            Assert.That(publishExecuted, Is.EqualTo(true));
+            Assert.That(executedThreadID, Is.Not.EqualTo(messageBroker.GetBackgroundThreadID()));
         }
 
         [Test]

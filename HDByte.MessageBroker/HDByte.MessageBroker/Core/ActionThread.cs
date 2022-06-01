@@ -4,5 +4,6 @@
     {
         UI,
         Background,
+        Task
     }
 }

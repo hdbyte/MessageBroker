@@ -42,12 +42,20 @@ public class CustomerOrder
 
 ### Example - Subscribing
 Using ActionThread.UI because this event will update the UI. Remove this if the event does not need to update the UI.
+Using ActionThread.Background will cause the events to run on the background thread. (Be careful of Thread Locking)
+Using ActionThread.Task will cause the events to run in a task. (Default)
 ```csharp
 Broker.Subscribe<CustomerOrder>(OnNewOrder, ActionThread.UI);
+Broker.Subscribe<Item>(OnNewItem, ActionThread.Background);
 
 private void OnNewOrder(CustomerOrder order)
 {
     textBox1.Text = order.Name;
     Debug.WriteLine(order.GetTotalCost());
+}
+
+private void OnNewItem(Item item)
+{
+    Debug.WriteLine(item.Name));
 }
 ```

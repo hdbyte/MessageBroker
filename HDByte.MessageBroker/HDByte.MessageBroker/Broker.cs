@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 
 namespace HDByte.MessageBroker
 {
@@ -29,9 +28,9 @@ namespace HDByte.MessageBroker
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action">Method to call when a subscribed message type is broadcasted.</param>
-        /// <param name="actionThread">The thread in which the action is performed on. Defaults to ActionThread.Background</param>
+        /// <param name="actionThread">The thread in which the action is performed on. Defaults to ActionThread.Task</param>
         /// <returns></returns>
-        public Guid Subscribe<T>(Action<T> action, ActionThread actionThread = ActionThread.Background)
+        public Guid Subscribe<T>(Action<T> action, ActionThread actionThread = ActionThread.Task)
         {
             Guid token = Guid.NewGuid();
             Type type = typeof(T);
@@ -79,8 +78,11 @@ namespace HDByte.MessageBroker
                                         _synchronizationContext.Post(delegate { message.Execute(subscription); }, null);
                                         break;
                                     case ActionThread.Background:
-                                    default:
                                         message.Execute(subscription);
+                                        break;
+                                    case ActionThread.Task:
+                                    default:
+                                        Task.Run(() => { message.Execute(subscription); });
                                         break;
                                 }
                             }
