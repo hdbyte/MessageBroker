@@ -5,3 +5,6 @@ Changed Target Framework to .NET Standard 2.1
 
 3.1.0 -> 3.1.1
 Reverted target framework back to .NET Standard 2.0 
+
+3.1.1 -> 3.1.2
+Documentation change only

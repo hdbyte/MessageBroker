@@ -9,7 +9,7 @@
 ## Quick Introduction
 'MessageBroker' is an implementation of the Publish/Subscribe programming pattern and is used to announce and react to events asynchronously. An advantage of this pattern is that the sender and receiver are not coupled together.
 
-By default, all events are processed on a background thread unless otherwise specified. Events that require UI interaction can be run on the UI thread provided that the attribute ActionThread.UI is applied to the subscribe event.
+By default, all events are processed on a background tasks unless otherwise specified. Events that require UI interaction can be run on the UI thread provided that the attribute ActionThread.UI is applied to the subscribe event.
 
 
 ### Getting Started
