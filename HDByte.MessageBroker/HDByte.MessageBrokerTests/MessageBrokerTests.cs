@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using HDByte.MessageBroker.Events;
 
 namespace MessageBroker.Tests
 {
@@ -19,6 +20,26 @@ namespace MessageBroker.Tests
 
             Assert.That(messageBroker.IsSubscribed(token), Is.EqualTo(true));
             Assert.That(messageBroker.IsSubscribed(new Guid()), Is.EqualTo(false));
+        }
+
+        [Test]
+        public void IsSubscribedByTypeWorks()
+        {
+            var messageBroker = new HDByte.MessageBroker.Broker();
+            var token = messageBroker.Subscribe<EventArgs>(null);
+
+            Assert.That(messageBroker.IsSubscribed<EventArgs>(), Is.EqualTo(true));
+            Assert.That(messageBroker.IsSubscribed<GenericEvent>(), Is.EqualTo(false));
+        }
+
+        [Test]
+        public void IsSubscribedByType2Works()
+        {
+            var messageBroker = new HDByte.MessageBroker.Broker();
+            var token = messageBroker.Subscribe<EventArgs>(null);
+
+            Assert.That(messageBroker.IsSubscribed(typeof(EventArgs)), Is.EqualTo(true));
+            Assert.That(messageBroker.IsSubscribed(typeof(GenericEvent)), Is.EqualTo(false));
         }
 
         [Test]
@@ -58,7 +79,7 @@ namespace MessageBroker.Tests
 
             Thread.Sleep(200); // Give MessageBroker plenty of time to process action.
             Assert.That(publishExecuted, Is.EqualTo(true));
-            Assert.That(executedThreadID, Is.EqualTo(messageBroker.GetBackgroundThreadID()));
+            Assert.That(executedThreadID, Is.EqualTo(messageBroker.BackgroundThreadID));
         }
 
         [Test]
@@ -110,6 +131,51 @@ namespace MessageBroker.Tests
             Thread.Sleep(200); // Give MessageBroker plenty of time to process action.
             Assert.That(publishExecuted, Is.EqualTo(true));
             Assert.That(checkBackgroundThreadID, Is.Not.EqualTo(messageBroker.GetBackgroundThreadID()));
+        }
+
+        [Test]
+        public void GenericEventTest()
+        {
+            // Tests a generic Event
+            var messageBroker = new HDByte.MessageBroker.Broker();
+
+            string testString = "";
+
+            Action<GenericEvent> doSomethingOnBackgroundThread = (e) =>
+            {
+                testString = e.Message;
+            };
+
+            var tokenOne = messageBroker.Subscribe<GenericEvent>(doSomethingOnBackgroundThread);
+            messageBroker.Publish(new GenericEvent() {Message = "TestStringABC123"});
+
+            Thread.Sleep(200); // Give MessageBroker plenty of time to process action.
+
+            Assert.That(testString, Is.EqualTo("TestStringABC123"));
+            Assert.That(testString, Is.Not.EqualTo(""));
+        }
+
+        [Test]
+        public void SubscriptionCountTest()
+        {
+            // Tests a generic Event
+            var messageBroker = new HDByte.MessageBroker.Broker();
+
+            string testString = "";
+
+            Action<GenericEvent> doSomethingOnBackgroundThread = (e) =>
+            {
+                testString = e.Message;
+            };
+
+            var tokenOne = messageBroker.Subscribe<GenericEvent>(doSomethingOnBackgroundThread);
+            messageBroker.Publish(new GenericEvent() { Message = "TestStringABC123" });
+
+            Thread.Sleep(200); // Give MessageBroker plenty of time to process action.
+
+            Assert.That(messageBroker.SubscriptionCount, Is.EqualTo(1));
+            var tokenTwo = messageBroker.Subscribe<GenericEvent>(doSomethingOnBackgroundThread);
+            Assert.That(messageBroker.SubscriptionCount, Is.EqualTo(2));
         }
     }
 }

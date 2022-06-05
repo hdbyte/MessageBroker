@@ -2,8 +2,8 @@
 {
     public sealed class BrokerManager
     {
-        private static readonly object _padLock = new object();
-        private static Broker _instance = null;
+        private static readonly object PadLock = new object();
+        private static Broker _instance;
 
         /// <summary>
         /// Creates and/or returns an instance of Broker.
@@ -13,7 +13,7 @@
         {
             if (_instance == null)
             {
-                lock (_padLock)
+                lock (PadLock)
                 {
                     if (_instance == null)
                     {

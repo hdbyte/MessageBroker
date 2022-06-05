@@ -11,15 +11,26 @@ namespace HDByte.MessageBroker
     public sealed class Broker
     {
         private readonly SynchronizationContext _synchronizationContext = SynchronizationContext.Current;
-        private List<Subscription> _subscriptions = new List<Subscription>();
-        private readonly object _padLock = new object();
-        public readonly BlockingCollection<IMessageQueueItem> _messageQueue = new BlockingCollection<IMessageQueueItem>();
+        private readonly ConcurrentDictionary<Guid, Subscription> _subscriptions = new ConcurrentDictionary<Guid, Subscription>();
+        private readonly BlockingCollection<IMessageQueueItem> _messageQueue = new BlockingCollection<IMessageQueueItem>();
         private readonly Thread _thread;
+
+        public int SubscriptionCount
+        {
+            get => _subscriptions.Count;
+        }
+
+        public int BackgroundThreadID
+        {
+            get => _thread.ManagedThreadId;
+        }
 
         public Broker()
         {
-            _thread = new Thread(() => EventQueueThreadConsumer());
-            _thread.IsBackground = true;
+            _thread = new Thread(EventQueueThreadConsumer)
+            {
+                IsBackground = true
+            };
             _thread.Start();
         }
 
@@ -34,12 +45,9 @@ namespace HDByte.MessageBroker
         {
             Guid token = Guid.NewGuid();
             Type type = typeof(T);
-            Subscription subscription = new Subscription() {Token = token, Type = type, Action = action, ActionThread = actionThread};
+            Subscription subscription = new Subscription() {Type = type, Action = action, ActionThread = actionThread};
 
-            lock (_padLock)
-            {
-                _subscriptions.Add(subscription);
-            }
+            _subscriptions[token] = subscription;
 
             return token;
         }
@@ -51,7 +59,7 @@ namespace HDByte.MessageBroker
         /// <param name="message">The message that is broadcast.</param>
         public void Publish<T>(T message)
         {
-            var messageQueue = new MessageQueueItem<T>() { Message = message, Type = typeof(T) };
+            var messageQueue = new MessageQueueItem<T> { Message = message, Type = typeof(T) };
             _messageQueue.Add(messageQueue);
         }
 
@@ -60,32 +68,25 @@ namespace HDByte.MessageBroker
         /// </summary>
         private void EventQueueThreadConsumer()
         {
-            while (!_messageQueue.IsCompleted)
+            foreach (var message in _messageQueue.GetConsumingEnumerable())
             {
-                if (_messageQueue.TryTake(out IMessageQueueItem message))
+                foreach (var keyPair in _subscriptions)
                 {
-                    Type messageType = message.Type;
-
-                    lock (_padLock)
+                    var subscription = keyPair.Value;
+                    if (subscription.Type.IsAssignableFrom(message.Type))
                     {
-                        foreach (Subscription subscription in _subscriptions)
+                        switch (subscription.ActionThread)
                         {
-                            if (subscription.Type.IsAssignableFrom(messageType))
-                            {
-                                switch (subscription.ActionThread)
-                                {
-                                    case ActionThread.UI:
-                                        _synchronizationContext.Post(delegate { message.Execute(subscription); }, null);
-                                        break;
-                                    case ActionThread.Background:
-                                        message.Execute(subscription);
-                                        break;
-                                    case ActionThread.Task:
-                                    default:
-                                        Task.Run(() => { message.Execute(subscription); });
-                                        break;
-                                }
-                            }
+                            case ActionThread.UI:
+                                _synchronizationContext.Post(delegate { message.Execute(subscription); }, null);
+                                break;
+                            case ActionThread.Background:
+                                message.Execute(subscription);
+                                break;
+                            case ActionThread.Task:
+                            default:
+                                Task.Run(() => { message.Execute(subscription); });
+                                break;
                         }
                     }
                 }
@@ -99,9 +100,26 @@ namespace HDByte.MessageBroker
         /// <returns></returns>
         public bool IsSubscribed(Guid token)
         {
-            bool isTokenSubscribed = _subscriptions.Any(a => a.Token == token);
+            return _subscriptions.ContainsKey(token);
+        }
 
-            return isTokenSubscribed;
+        /// <summary>
+        /// Returns true if a type is used in any subscription.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsSubscribed<T>()
+        {
+            return _subscriptions.Any(x => x.Value.Type == typeof(T));
+        }
+
+        /// <summary>
+        /// Returns true if type is used in any subscription.
+        /// </summary>
+        /// <param name="type">Type of class to be checked [use typeof()].</param>
+        /// <returns></returns>
+        public bool IsSubscribed(Type type)
+        {
+            return _subscriptions.Any(x => x.Value.Type == type);
         }
 
         /// <summary>
@@ -111,23 +129,13 @@ namespace HDByte.MessageBroker
         /// <returns></returns>
         public bool Unsubscribe(Guid token)
         {
-            if (IsSubscribed(token))
-            {
-                lock (_padLock)
-                {
-                    var newSubscriptionList = _subscriptions.Where(a => a.Token != token).ToList();
-                    _subscriptions = newSubscriptionList;
-                }
-                return true;
-            } else
-            {
-                return false;
-            }
+            return _subscriptions.TryRemove(token, out _);
         }
 
         /// <summary>
-        /// Returns the Thread ID of the Broker consumer thread.
-        /// 
+        /// [DEPRECIATED] Returns the Thread ID of the Broker consumer thread.
+        ///
+        /// Will be replaced by only int BackgroundThreadID in a future release.
         /// Mostly useful for testing purposes but may be needed in rare circumstances.
         /// </summary>
         /// <returns></returns>
