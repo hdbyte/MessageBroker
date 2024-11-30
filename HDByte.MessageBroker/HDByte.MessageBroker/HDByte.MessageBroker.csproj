@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>HDByte.MessageBroker</RootNamespace>
     <ApplicationIcon />
     <Win32Resource />
@@ -14,9 +14,9 @@
     <PackageProjectUrl>https://github.com/hdbyte/MessageBroker</PackageProjectUrl>
     <RepositoryUrl>https://github.com/hdbyte/MessageBroker</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <Copyright>2019, 2020, 2022</Copyright>
+    <Copyright>2019, 2020, 2022, 2024</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>3.2.0</Version>
+    <Version>4.0.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
